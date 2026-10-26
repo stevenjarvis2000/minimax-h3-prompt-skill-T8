@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' file: data:; script-src 'self' file:; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data: blob:; media-src 'self' file: blob:; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    >
+    <title>T8 Prompt Library · 静态版</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="shim.js" defer></script>
+    <script src="data/catalog.js" defer></script>
+    <script src="vendor/personal-library.js" defer></script>
+    <script src="vendor/catalog-sort.js" defer></script>
+    <script src="vendor/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand" aria-label="T8 Prompt Library">
+        <span class="brand-mark">T8</span>
+        <span>
+          <strong>Prompt Library</strong>
+          <small>CREATIVE DNA ARCHIVE</small>
+        </span>
+      </div>
+      <div class="update-area">
+        <div class="locale-toggle" role="group" aria-label="显示语言">
+          <button id="global-locale-en" class="locale-button" type="button" aria-pressed="false">EN</button>
+          <button id="global-locale-zh" class="locale-button active" type="button" aria-pressed="true">中文</button>
+        </div>
+        <div class="repository-icon-links" role="group" aria-label="相关 GitHub 仓库" data-github-group>
+          <button id="open-library-github" class="github-icon-button" type="button" data-github-repository="library" aria-label="Prompt Library GitHub" title="Prompt Library GitHub">
+            <svg class="github-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .7a11.3 11.3 0 0 0-3.57 22c.57.1.77-.25.77-.55v-2.17c-3.15.68-3.81-1.34-3.81-1.34-.51-1.31-1.26-1.66-1.26-1.66-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.73 2.65 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.51-.29-5.15-1.26-5.15-5.59 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.44.11-3 0 0 .95-.3 3.11 1.16A10.8 10.8 0 0 1 12 6.08c.96 0 1.93.13 2.83.38 2.16-1.46 3.11-1.16 3.11-1.16.62 1.56.23 2.71.11 3 .73.79 1.17 1.8 1.17 3.04 0 4.34-2.65 5.3-5.17 5.58.41.35.77 1.04.77 2.1v3.13c0 .3.2.66.78.55A11.3 11.3 0 0 0 12 .7Z"/></svg>
+          </button>
+          <button id="open-node-github" class="github-icon-button" type="button" data-github-repository="node" aria-label="ComfyUI 节点 GitHub" title="ComfyUI 节点 GitHub">
+            <svg class="github-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .7a11.3 11.3 0 0 0-3.57 22c.57.1.77-.25.77-.55v-2.17c-3.15.68-3.81-1.34-3.81-1.34-.51-1.31-1.26-1.66-1.26-1.66-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.73 2.65 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.51-.29-5.15-1.26-5.15-5.59 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.44.11-3 0 0 .95-.3 3.11 1.16A10.8 10.8 0 0 1 12 6.08c.96 0 1.93.13 2.83.38 2.16-1.46 3.11-1.16 3.11-1.16.62 1.56.23 2.71.11 3 .73.79 1.17 1.8 1.17 3.04 0 4.34-2.65 5.3-5.17 5.58.41.35.77 1.04.77 2.1v3.13c0 .3.2.66.78.55A11.3 11.3 0 0 0 12 .7Z"/></svg>
+          </button>
+        </div>
+        <!-- 静态版：工作台/AI 增强不包含，这里保留 locale 按钮占位供渲染层绑定 -->
+        <div class="hidden" aria-hidden="true">
+          <button id="workbench-locale-en" class="locale-button" type="button" aria-pressed="false">EN</button>
+          <button id="workbench-locale-zh" class="locale-button active" type="button" aria-pressed="true">中文</button>
+        </div>
+        <span id="update-status" class="update-status" aria-live="polite">Updates not checked</span>
+        <button id="install-update" class="button ghost hidden" type="button">Restart to install</button>
+        <button id="check-update" class="button ghost" type="button">Check for updates</button>
+      </div>
+    </header>
+
+    <main>
+      <nav class="view-tabs" aria-label="Content type">
+        <button id="view-all" class="view-tab active" type="button" aria-pressed="true"><span class="view-label">All</span> <span id="view-all-count">0</span></button>
+        <button id="view-cases" class="view-tab" type="button" aria-pressed="false"><span class="view-label">Creative Cases</span> <span id="view-case-count">0</span></button>
+        <button id="view-official-skills" class="view-tab" type="button" aria-pressed="false"><span class="view-label">MiniMax Official Skills</span> <span id="view-official-count">0</span></button>
+        <button id="view-community-skills" class="view-tab" type="button" aria-pressed="false"><span class="view-label">Community Skills</span> <span id="view-community-count">0</span></button>
+        <button id="view-favorites" class="view-tab personal-tab" type="button" aria-pressed="false"><span class="view-label">Favorites</span> <span id="view-favorite-count">0</span></button>
+        <button id="view-collections" class="view-tab personal-tab" type="button" aria-pressed="false"><span class="view-label">Collections</span> <span id="view-collection-count">0</span></button>
+        <button id="view-history" class="view-tab personal-tab" type="button" aria-pressed="false"><span class="view-label">History</span> <span id="view-history-count">0</span></button>
+      </nav>
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p id="page-kicker" class="eyebrow">LOCAL · READ-ONLY CASES</p>
+          <h1 id="page-title">High-quality video prompt cases</h1>
+          <p id="page-intro" class="intro-copy">Reusable Creative DNA extracted from complete videos, with MiniMax H3 and Seedance 2.0 templates.</p>
+        </div>
+        <div class="catalog-version">
+          <span>CATALOG</span>
+          <strong id="catalog-version">v1.0.0</strong>
+        </div>
+      </section>
+
+      <section id="personal-toolbar" class="personal-toolbar hidden" aria-label="Personal library tools">
+        <div id="collection-controls" class="collection-controls hidden">
+          <label for="collection-select" id="collection-select-label">Collection</label>
+          <select id="collection-select"></select>
+          <button id="new-collection" class="button copy-secondary" type="button">New collection</button>
+          <button id="rename-collection" class="button ghost" type="button">Rename</button>
+          <button id="delete-collection" class="button ghost danger" type="button">Delete</button>
+        </div>
+        <div id="history-controls" class="history-controls hidden">
+          <span id="history-note">Most recently viewed first; stored only on this device.</span>
+          <button id="clear-history" class="button ghost danger" type="button">Clear history</button>
+        </div>
+      </section>
+
+      <section class="stats" aria-label="Library statistics">
+        <div><span id="stat-cases-label">Published cases</span><strong id="stat-cases">0</strong></div>
+        <div><span id="stat-videos-label">Complete local videos</span><strong id="stat-videos">0</strong></div>
+        <div><span id="stat-prompts-label">Model templates</span><strong id="stat-prompts">0</strong></div>
+        <div><span id="stat-results-label">Current results</span><strong id="stat-results">0</strong></div>
+      </section>
+
+      <section class="filters" aria-label="筛选与排序内容">
+        <label class="search-field">
+          <span aria-hidden="true">⌕</span>
+          <input id="search" type="search" placeholder="Search mechanism, style, camera, tags, author or ID" autocomplete="off">
+        </label>
+        <label class="filter-source">
+          <span id="platform-filter-label">Platform</span>
+          <select id="platform-filter"><option value="">All platforms</option></select>
+        </label>
+        <label class="filter-model">
+          <span id="model-filter-label">Model</span>
+          <select id="model-filter"><option value="">All models</option></select>
+        </label>
+        <label class="filter-tag">
+          <span id="tag-filter-label">Tag</span>
+          <select id="tag-filter"><option value="">All tags</option></select>
+        </label>
+        <label class="filter-sort">
+          <span id="sort-order-label">排序</span>
+          <select id="sort-order">
+            <option value="newest-added">最新收录</option>
+            <option value="recently-updated">最近更新</option>
+            <option value="oldest-added">最早收录</option>
+            <option value="title-asc">标题 A–Z</option>
+            <option value="title-desc">标题 Z–A</option>
+          </select>
+        </label>
+        <button id="clear-filters" class="button clear" type="button">清除筛选</button>
+      </section>
+
+      <div id="catalog-warning" class="catalog-warning hidden" role="status"></div>
+      <section id="case-grid" class="case-grid" aria-live="polite" aria-busy="true"></section>
+      <section id="empty-state" class="empty-state hidden">
+        <span>VP</span>
+          <h2 id="empty-title">No matching cases</h2>
+        <p id="empty-copy">Adjust the search or clear the filters.</p>
+      </section>
+
+      <section id="compare-bar" class="compare-bar hidden" aria-label="案例对比">
+        <div>
+          <strong id="compare-bar-title">Case comparison</strong>
+          <span id="compare-count">已选 0/3</span>
+        </div>
+        <div id="compare-chips" class="compare-chips"></div>
+        <button id="open-compare" class="button source" type="button" disabled>Compare</button>
+      </section>
+    </main>
+
+    <dialog id="case-dialog" class="case-dialog" aria-labelledby="detail-title">
+      <div class="dialog-shell">
+        <header class="dialog-header">
+          <div>
+            <p id="detail-kicker" class="eyebrow"></p>
+            <h2 id="detail-title"></h2>
+          </div>
+          <div class="dialog-header-actions">
+            <div class="locale-toggle detail-locale-toggle" role="group" aria-label="详情语言">
+              <button id="detail-locale-en" class="locale-button" type="button" aria-pressed="false">EN</button>
+              <button id="detail-locale-zh" class="locale-button active" type="button" aria-pressed="true">中文</button>
+            </div>
+             <button id="copy-full-item" class="button copy" type="button">Copy full item</button>
+             <button id="detail-favorite" class="button personal-action" type="button" aria-pressed="false">☆ Favorite</button>
+             <button id="detail-collections" class="button personal-action" type="button">＋ Collections</button>
+            <button id="close-dialog" class="icon-button" type="button" aria-label="Close details">×</button>
+          </div>
+        </header>
+
+        <nav id="detail-nav" class="detail-nav" aria-label="Detail sections">
+          <button type="button" data-scroll-target="detail-overview">Overview</button>
+          <button type="button" data-scroll-target="detail-quick-start">Quick start</button>
+          <button type="button" data-scroll-target="detail-creative-dna">Creative DNA</button>
+          <button type="button" data-scroll-target="detail-prompts">Prompts</button>
+          <button type="button" data-scroll-target="detail-validation">Validation</button>
+        </nav>
+
+        <div id="detail-overview" class="detail-hero detail-anchor">
+          <section id="detail-media" class="detail-media" aria-label="案例视频"></section>
+          <aside class="detail-summary">
+            <p id="detail-summary"></p>
+            <dl id="detail-meta"></dl>
+            <div class="detail-actions">
+              <button id="copy-overview" class="button copy-secondary" type="button">Copy overview</button>
+              <button id="copy-source-link" class="button copy-secondary hidden" type="button">Copy source link</button>
+              <button id="open-source" class="button source hidden" type="button">Open source ↗</button>
+              <button id="open-preview" class="button hidden" type="button">Open official preview ↗</button>
+            </div>
+          </aside>
+        </div>
+
+        <section id="detail-quick-start" class="detail-section detail-anchor">
+          <div class="section-heading">
+            <div><p id="detail-quick-kicker" class="eyebrow">START HERE</p><h3 id="detail-quick-title">Quick start</h3></div>
+            <button id="copy-quick-start" class="button copy-secondary" type="button">Copy section</button>
+          </div>
+          <div id="quick-start" class="quick-start-grid"></div>
+        </section>
+
+        <section id="detail-creative-dna" class="detail-section detail-anchor">
+          <div class="section-heading">
+            <div>
+              <p id="detail-mechanism-kicker" class="eyebrow">REUSABLE MECHANISM</p>
+              <h3 id="detail-mechanism-title">Creative DNA</h3>
+            </div>
+            <button id="copy-dna" class="button copy-secondary" type="button">Copy Creative DNA</button>
+          </div>
+          <div id="creative-dna" class="dna-grid"></div>
+        </section>
+
+        <section id="detail-prompts" class="detail-section prompt-section detail-anchor">
+          <div class="section-heading prompt-heading">
+            <div>
+              <p id="detail-prompt-kicker" class="eyebrow">MODEL-READY PROMPTS</p>
+              <h3 id="detail-prompt-title">提示词模板</h3>
+            </div>
+            <button id="copy-prompt" class="button copy" type="button">Copy current prompt</button>
+          </div>
+          <div class="prompt-tabs" role="tablist" aria-label="模型提示词">
+            <button id="tab-h3" class="prompt-tab active" type="button" role="tab" aria-selected="true" aria-controls="prompt-panel" tabindex="0">MiniMax H3</button>
+            <button id="tab-seedance" class="prompt-tab" type="button" role="tab" aria-selected="false" aria-controls="prompt-panel" tabindex="-1">Seedance 2.0</button>
+          </div>
+          <div id="prompt-panel" role="tabpanel" aria-labelledby="tab-h3">
+            <div id="prompt-language-banner" class="prompt-language-banner" role="note">
+              <strong id="prompt-language-title"></strong>
+              <p id="prompt-language-note" class="prompt-language-note"></p>
+            </div>
+            <div id="prompt-structure-guide" class="prompt-structure-guide hidden">
+              <strong id="prompt-structure-title"></strong>
+              <ul id="prompt-structure-list"></ul>
+            </div>
+            <pre id="prompt-text" class="prompt-text" tabindex="0"></pre>
+            <p id="prompt-missing" class="prompt-missing hidden">No template is available for this model.</p>
+          </div>
+        </section>
+
+        <section id="detail-validation" class="detail-section detail-anchor">
+          <div class="section-heading">
+            <div><p id="detail-validation-kicker" class="eyebrow">TRUST & DELIVERY</p><h3 id="detail-validation-title">Validation and integration</h3></div>
+            <button id="copy-validation" class="button copy-secondary" type="button">Copy section</button>
+          </div>
+          <div id="validation-grid" class="validation-grid"></div>
+        </section>
+      </div>
+    </dialog>
+
+    <dialog id="media-install-dialog" class="small-dialog media-install-dialog" aria-labelledby="media-install-title">
+      <div class="small-dialog-shell">
+        <div class="media-install-heading">
+          <div><p class="eyebrow">FULL VIDEO PACK</p><h2 id="media-install-title">安装完整视频包</h2></div>
+          <button id="close-media-install" class="icon-button" type="button" aria-label="关闭完整视频安装说明">×</button>
+        </div>
+        <p id="media-install-intro" class="media-install-intro"></p>
+        <ol id="media-install-steps" class="media-install-steps"></ol>
+        <div class="media-install-path-card">
+          <span id="media-install-path-label">请解压到这个目录</span>
+          <code id="media-install-path"></code>
+          <small id="media-install-path-note"></small>
+        </div>
+        <p id="media-install-status" class="media-install-status" role="status"></p>
+        <div class="small-dialog-actions media-install-actions">
+          <button id="open-media-release" class="button copy-secondary" type="button">打开 Release 下载页 ↗</button>
+          <button id="open-media-folder" class="button source" type="button">打开媒体目录</button>
+          <button id="done-media-install" class="button ghost" type="button">完成</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="collection-editor-dialog" class="small-dialog" aria-labelledby="collection-editor-title">
+      <form id="collection-editor-form" method="dialog" class="small-dialog-shell">
+        <h2 id="collection-editor-title">New collection</h2>
+        <label for="collection-name" id="collection-name-label">Collection name</label>
+        <input id="collection-name" name="collection-name" maxlength="48" autocomplete="off" required>
+        <p id="collection-editor-error" class="form-error hidden" role="alert"></p>
+        <div class="small-dialog-actions">
+          <button id="cancel-collection-editor" class="button ghost" type="button">Cancel</button>
+          <button id="save-collection" class="button source" type="submit">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="collection-membership-dialog" class="small-dialog" aria-labelledby="collection-membership-title">
+      <div class="small-dialog-shell">
+        <h2 id="collection-membership-title">Add to collections</h2>
+        <p id="collection-membership-item"></p>
+        <div id="collection-membership-list" class="collection-membership-list"></div>
+        <div class="small-dialog-actions">
+          <button id="membership-new-collection" class="button copy-secondary" type="button">New collection</button>
+          <button id="close-collection-membership" class="button source" type="button">Done</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="compare-dialog" class="case-dialog compare-dialog" aria-labelledby="compare-title">
+      <div class="dialog-shell">
+        <header class="dialog-header">
+          <div>
+            <p class="eyebrow">SIDE-BY-SIDE REVIEW</p>
+            <h2 id="compare-title">Compare mechanisms and prompts</h2>
+          </div>
+          <button id="close-compare" class="icon-button" type="button" aria-label="关闭对比">×</button>
+        </header>
+        <div class="compare-toolbar">
+          <span id="compare-model-label">Prompt model</span>
+          <div class="prompt-tabs" role="tablist" aria-label="对比提示词模型">
+            <button id="compare-tab-h3" class="prompt-tab active" type="button" role="tab" aria-selected="true" aria-controls="compare-grid" tabindex="0">MiniMax H3</button>
+            <button id="compare-tab-seedance" class="prompt-tab" type="button" role="tab" aria-selected="false" aria-controls="compare-grid" tabindex="-1">Seedance 2.0</button>
+          </div>
+        </div>
+        <section id="compare-grid" class="compare-grid" role="tabpanel" aria-labelledby="compare-tab-h3"></section>
+      </div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

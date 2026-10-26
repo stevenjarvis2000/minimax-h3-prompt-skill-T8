@@ -1,0 +1,4 @@
+# data/catalog.js 由 build.mjs 从 catalog/ 与 skills/ 现读生成（约 18 MB），不入库
+data/catalog.js
+# 可选：解压出来的完整视频媒体包也不入库
+media/
