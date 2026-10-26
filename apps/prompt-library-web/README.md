@@ -69,6 +69,19 @@ Electron 的 `t8media://` 地址换成相对路径：
 把三个包的内容**直接解压到 `apps/prompt-library-web/media/`**（根部能看到 `media-pack-manifest.json`），
 再跑一次 `node build.mjs`。之后网格悬停播放、详情页直接播 mp4，"本地完整视频"统计也会变成 613。
 
+## 通过第三方 CDN 访问（raw.githack / statically 等）
+
+页面本身能被这类服务直出（HTML 里没有跨域依赖），但要注意它们的**资源会 302 到
+raw.githubusercontent.com**，属于跨源加载。所以 `index.html` 的 CSP 已显式放行：
+
+```
+img-src / media-src ... https://raw.githubusercontent.com https://*.githubusercontent.com
+                       https://raw.githack.com https://*.githack.com
+```
+
+自己改 CSP 时别把这两组域删掉，否则表现就是"页面出来了、卡片一片空白、图片全不加载"。
+（本地 `file://` 与 GitHub Pages 同源，不需要这条也能显示。）
+
 ## 与桌面版的差异
 
 | 能力 | 静态版 | 说明 |
