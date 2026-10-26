@@ -122,7 +122,7 @@ const buildMeta = {
   thumbMode,
   mediaRoot: mediaAvailable ? "media/" : "",
   mediaManifestPresent: mediaAvailable && existsSync(path.join(mediaRoot, "media-pack-manifest.json")),
-  sourceRepo: repoRoot
+  appDir: "apps/prompt-library-web"
 };
 
 const body = [

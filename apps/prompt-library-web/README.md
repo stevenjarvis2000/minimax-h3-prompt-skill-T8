@@ -29,15 +29,23 @@ apps/prompt-library-web/
 │   ├── app.js            桌面版渲染逻辑，仅 1 行改动（网格缩略图优先 poster）
 │   ├── personal-library.js   收藏/合集/历史（localStorage）
 │   └── catalog-sort.js       排序逻辑
-├── data/catalog.js       生成物：17.7 MB，613 案例 + 9 官方 + 2 社区（含提示词、双语、Creative DNA）
+├── data/catalog.js       生成物（已入库）：17.7 MB，613 案例 + 9 官方 + 2 社区（含提示词、双语、Creative DNA）
 ├── build.mjs             生成 data/catalog.js
 ├── verify.mjs            20 项真机验收（CDP 驱动 headless Chrome）
 └── README.md
 ```
 
-## 重新生成数据
+## 数据文件
 
-`data/catalog.js` 是从仓库的 `catalog/` 与 `skills/` 现读现生成的，不是手写：
+`data/catalog.js` 已随库提供，clone 完直接打开 `index.html` 就能用，不必先构建。
+它由 `build.mjs` 从仓库的 `catalog/` 与 `skills/` 现读生成（不是手写），
+案例目录有更新或要切换缩略图模式时重跑一次并提交：
+
+```bash
+node build.mjs            # 重新生成 data/catalog.js
+```
+
+生成命令：
 
 ```bash
 cd apps/prompt-library-web
